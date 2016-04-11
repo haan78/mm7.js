@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script type="text/javascript" src="../../src/mm7.js"></script>
+        <script type="text/javascript" src="../../src/mm7.document.js"></script>
+        <script type="text/javascript" src="../../src/mm7.roller.js"></script>
+    </head>
+    <body>
+        <div id="holder">
+            <div>DIV 1</div>
+            <div>DIV 2</div>
+            <div>DIV 3</div>
+            <div>DIV 4</div>
+            <div>DIV 5</div>
+            <div>DIV 6</div>
+            <div>DIV 7</div>
+            <div>DIV 8</div>
+            <div>DIV 9</div>
+            <div>DIV 10</div>
+        </div>
+        
+        
+        <script>           
+           mm7.roller("holder",{              
+               limit:6,
+               interval:1000,
+               auto:true,
+               vector:"-"
+           });
+        </script>
+    </body>
+</html>
