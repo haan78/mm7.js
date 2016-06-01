@@ -3,7 +3,7 @@
     	fix:function (str,single) {
     		var s = new String(str);    		
     		s = single ? s.replace(/'/g, '\'') : s.replace(/"/g, '\'');    	
-	    	return s.replace(/(?:\r\n|\r|\n)/g, '');
+	    	return s.replace(/(?:\r\n|\r|\n|\t)/g, '');
     	},
         toObject: function(json) {
             var response = null;
