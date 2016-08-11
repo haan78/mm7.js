@@ -1,4 +1,4 @@
-/* BUILD Per 11.08.2016@ 9-16-17,18  
+/* BUILD Per 11.08.2016@ 9-18-59,00  
 MM7 Java Script Part */ 
 var mm7 = {
     lastError: "",
@@ -1736,7 +1736,7 @@ t.start();
         onClosing:null, //parameter type function (event) {...}
         onClosed:null, //parameter type function (event) {...}
         onLoad:null, //parameter type function (event) {...}
-        onCallback:null // Callback function will inject to child. From child document callback function can call like this ( window.colback(...); )
+        onCallback:null // Callback function will inject to child. From child document callback function can be called like this ( window.colback(...); )
     }
  */
 

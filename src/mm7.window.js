@@ -14,7 +14,7 @@
         onClosing:null, //parameter type function (event) {...}
         onClosed:null, //parameter type function (event) {...}
         onLoad:null, //parameter type function (event) {...}
-        onCallback:null // Callback function will inject to child. From child document callback function can call like this ( window.colback(...); )
+        onCallback:null // Callback function will inject to child. From child document callback function can be called like this ( window.colback(...); )
     }
  */
 
