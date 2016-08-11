@@ -1,4 +1,4 @@
-/* BUILD Per 11.08.2016@ 9-05-00,16  
+/* BUILD Per 11.08.2016@ 9-16-17,18  
 MM7 Java Script Part */ 
 var mm7 = {
     lastError: "",
@@ -1720,7 +1720,27 @@ t.start();
             return Math.abs(a * b) / this.gcd(a, b);
         }
     };
-})(mm7);(function (mm7) {
+})(mm7);
+/*
+ * Default settings
+ * {        
+        fullscreen:false,
+        menubar:false,
+        status:false,
+        titlebar:false,
+        toolbar:false,
+        top:-1, // -1 means center of document
+        left:-1, //-1 means center of document
+        width:400,
+        height:400,            
+        onClosing:null, //parameter type function (event) {...}
+        onClosed:null, //parameter type function (event) {...}
+        onLoad:null, //parameter type function (event) {...}
+        onCallback:null // Callback function will inject to child. From child document callback function can call like this ( window.colback(...); )
+    }
+ */
+
+(function (mm7) {
     mm7["window"] = {
         "defaults": {        
             fullscreen:false,
