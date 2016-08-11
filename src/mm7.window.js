@@ -44,9 +44,9 @@
                 return str.length > 0 ? str.substr(1) : "" ;
             }
             
-            function create(obj) {
+            function create(name,url,obj) {
                 var settings = winSettings(obj);
-                var win = window.open(obj.url,obj.name,settings);
+                var win = window.open(url,name,settings);
                 if ( typeof obj.onCallback === "function" ) {
                     win.window["callback"] = obj.onCallback;
                 }
@@ -67,11 +67,12 @@
                 
                 return win;
             }
-            mm7.window.list[name] = create(options);
+            mm7.window.list[name] = create(name,url,options);
         },
         "close":function(name) {
             if ( this.list[name] ) {
                 this.list[name].window.close();
+                delete this.list[name];
             }
         },
         "list":{}

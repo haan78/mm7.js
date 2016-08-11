@@ -1,4 +1,4 @@
-/* BUILD Sal 26.04.2016@11-17-59,12  
+/* BUILD Per 11.08.2016@ 9-05-00,16  
 MM7 Java Script Part */ 
 var mm7 = {
     lastError: "",
@@ -19,6 +19,17 @@ var mm7 = {
             }
         }
         return -1;
+    },
+    extend:function(obj1,obj2) {
+        var o = {};
+        for ( var k in obj1 ) {
+            if ( typeof obj2[k] !== "undefined" ) {
+                o[k] = obj2[k];
+            } else {
+                o[k] = obj1[k];
+            }
+        }
+        return o;
     },
     type: function(data) {
         if (data === null)
@@ -291,7 +302,7 @@ var mm7 = {
     	fix:function (str,single) {
     		var s = new String(str);    		
     		s = single ? s.replace(/'/g, '\'') : s.replace(/"/g, '\'');    	
-	    	return s.replace(/(?:\r\n|\r|\n)/g, '');
+	    	return s.replace(/(?:\r\n|\r|\n|\t)/g, '');
     	},
         toObject: function(json) {
             var response = null;
@@ -394,8 +405,10 @@ var mm7 = {
     
     mm7["http"] = {
         responseType: "json",
+        onBefor: null,
+        onAfter: null,
         onError: null,
-        request: function(url, obj, callBack,before,after) {
+        request: function(url, obj, callBack) {
             //Building HTTP Request
             var HTTP = null;
             if (window.XMLHttpRequest) { //w3
@@ -416,48 +429,32 @@ var mm7 = {
 
             var requestStr = "";
             if ((typeof obj === "object") && (obj !== null)) {
-                if ( this.responseType === "json" ) {
-                    requestStr = mm7.json.toString(obj);
-                } else {
-                    requestStr = encodeURI(mm7.url.toQuery(obj));
-                }
+                requestStr = encodeURI(mm7.url.toQuery(obj));
             }
 
             if (this.responseType === "json") {
                 HTTP.onreadystatechange = function() {
+
                     if (this.readyState === 4) {
                         var response = mm7.json.toObject(this.responseText);
                         if (response !== null) {
                             if ((typeof callBack === "function") && (response !== null))
-                                if ( typeof after === "function" ) {
-                                    after();
-                                }
                                 callBack(response);
                         } else {
                             mm7.error("Response is null",mm7.http.onError);
-                            if ( typeof after === "function" ) {
-                                after();
-                            }
                         }
                     }
                 };
             } else {
                 HTTP.onreadystatechange = function() {
                     if (this.readyState === 4) {
-                        if (typeof callBack === "function") {
-                            if ( typeof after === "function" ) {
-                                after();
-                            }
+                        if (typeof callBack === "function")
                             callBack(this.responseText);
-                        }
                     }
                 };
             }
 
             try {
-                if ( typeof before === "function" ) {
-                    before();
-                }
                 if (requestStr !== "") {
                     HTTP.open("POST", url, true);
                     HTTP.setRequestHeader("Content-type", "application/x-www-form-urlencoded;charset=UTF-8");
@@ -506,6 +503,13 @@ var mm7 = {
                     }
                 }
             },
+            isRealFormElement : function(elm) {
+            	if ( (elm.type) && ( elm.type.toLowerCase() !== "fieldset" ) && (elm.name!=="") ) {
+            		return true;
+            	} else {
+            		return false;
+            	}
+            },
             get: function(defaults) {
                 var values = {};
                 if ((defaults !== null) && (typeof defaults === "object"))
@@ -513,10 +517,10 @@ var mm7 = {
 
                 for (var i = 0; i < this.form.elements.length; i++) {
                     var elm = this.form.elements[i];
-                    var type = elm.type.toLowerCase();
-                    var name = elm.name;
-                    var value = elm.value;
-                    if (name !== "") {
+                    if ( this.isRealFormElement(elm) ) {
+                        var type = elm.type.toLowerCase();
+                        var name = elm.name;
+                        var value = elm.value;
                         if ((type === "checkbox") || (type === "radio")) {
                             if (elm.checked) {
                                 values[name] = value;
@@ -543,29 +547,31 @@ var mm7 = {
                         } else {
                             values[name] = value;
                         }
-                    }
+                    }                                        
                 }
                 return values;
             },
             clear:function() {
                 this.form.reset();
                 for (var i = 0; i < this.form.elements.length; i++) {
-                    var elm = this.form.elements[i];
-                    var type = elm.type.toLowerCase();
-                    var name = elm.name;
-                    if (name !== "") {
-                        if ( type === "hidden") {
-                            elm.value = "";
+                	var elm = this.form.elements[i];
+                	if ( this.isRealFormElement(elm) ) {                		
+                        var type = elm.type.toLowerCase();
+                        var name = elm.name;
+                        if (name !== "") {
+                            if ( type === "hidden") {
+                                elm.value = "";
+                            }
                         }
-                    }
+                	}                    
                 }
             },
             set: function(values,clear) {
                 for (var i = 0; i < this.form.elements.length; i++) {
                     var elm = this.form.elements[i];
-                    var type = elm.type.toLowerCase();
-                    var name = elm.name;
-                    if (name !== "") {
+                    if ( this.isRealFormElement(elm) ) {
+                    	var type = elm.type.toLowerCase();
+                        var name = elm.name;
                         if (typeof values[name] !== "undefined") {
                             var value = values[name];
                             if ((type === "checkbox") || (type === "radio")) {
@@ -592,7 +598,7 @@ var mm7 = {
                                 }
                             }                            
                         }
-                    }
+                    }                    
                 }
             }
         };
@@ -1714,4 +1720,85 @@ t.start();
             return Math.abs(a * b) / this.gcd(a, b);
         }
     };
+})(mm7);(function (mm7) {
+    mm7["window"] = {
+        "defaults": {        
+            fullscreen:false,
+            menubar:false,
+            status:false,
+            titlebar:false,
+            toolbar:false,
+            top:-1,
+            left:-1,
+            width:400,
+            height:400,            
+            onClosing:null,
+            onClosed:null,
+            onLoad:null,
+            onCallback:null
+        },
+        
+        "open":function(name,url,options) {
+            function winSettings(obj) {
+                var str = "";
+                if ( obj.fullscreen ) str+=",fullscreen=1"; else str+=",fullscreen=0";
+                if ( obj.menubar ) str+=",menubar=1"; else str+=",menubar=0";
+                if ( obj.status ) str+=",status=1"; else str+=",status=0";
+                if ( obj.titlebar ) str+=",titlebar=1"; else str+=",titlebar=0";
+                if ( obj.toolbar ) str+=",toolbar=1"; else str+=",toolbar=0";
+        
+                str+=",width="+obj.width;
+                str+=",height="+obj.height;
+        
+                if ( obj.left === -1 ) {
+                    var v = Math.floor( ($( document ).width() - obj.width) / 2 );
+                    str+=",left="+v;
+                } else {
+                    str+=",left="+obj.left;
+                }
+        
+                if ( obj.top === -1 ) {
+                    var v = Math.floor( ($( document ).height() - obj.height) / 2 );
+                    str+=",top="+v;
+                } else {
+                    str+=",top="+obj.top;
+                }        
+                return str.length > 0 ? str.substr(1) : "" ;
+            }
+            
+            function create(name,url,obj) {
+                var settings = winSettings(obj);
+                var win = window.open(url,name,settings);
+                if ( typeof obj.onCallback === "function" ) {
+                    win.window["callback"] = obj.onCallback;
+                }
+        
+                win.window.addEventListener("load",function(evt){                
+                    if ( typeof obj.onClosing === "function" ) {
+                        win.window.addEventListener("beforeunload",obj.onClosing,false);                    
+                    }
+                    
+                    if ( typeof obj.onClosed === "function" ) {
+                        win.window.addEventListener("unload",obj.onClosed,false);                    
+                    }
+                    
+                    if ( typeof obj.onLoad === "function" ) {
+                        obj.onLoad(evt);
+                    }                    
+                });
+                
+                return win;
+            }
+            mm7.window.list[name] = create(name,url,options);
+        },
+        "close":function(name) {
+            if ( this.list[name] ) {
+                this.list[name].window.close();
+                delete this.list[name];
+            }
+        },
+        "list":{}
+    };
 })(mm7);
+
+
