@@ -18,6 +18,17 @@ var mm7 = {
         }
         return -1;
     },
+    extend:function(obj1,obj2) {
+        var o = {};
+        for ( var k in obj1 ) {
+            if ( typeof obj2[k] !== "undefined" ) {
+                o[k] = obj2[k];
+            } else {
+                o[k] = obj1[k];
+            }
+        }
+        return o;
+    },
     type: function(data) {
         if (data === null)
             return "null";
