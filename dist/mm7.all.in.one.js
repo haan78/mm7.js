@@ -1,4 +1,4 @@
-/* BUILD Per 20.04.2017@15-59-44,87  
+/* BUILD Cum 28.07.2017@10-02-12,47  
 MM7 Java Script Part */ 
 var mm7 = {
     lastError: "",
@@ -304,6 +304,17 @@ var mm7 = {
     		s = single ? s.replace(/'/g, '\'') : s.replace(/"/g, '\'');    	
 	    	return s.replace(/(?:\r\n|\r|\n|\t)/g, '');
     	},
+        fixAll:function(Obj,single) {
+            var o = Obj;
+            
+            if ( typeof o !== "object" ) return o;
+            
+            for ( var k in o ) {
+                if ( typeof o[k] === "string"  ) o[k] = this.fix(o[k],single);
+                else if ( typeof o[k] === "object" ) o[k] = this.fixAll(o[k],single);
+            }
+            return o;
+        },
         toObject: function(json) {
             var response = null;
             try {
@@ -478,14 +489,15 @@ var mm7 = {
 
 
 
-(function(mm7) {
-    
-    if (mm7.missing(["document"],true)>-1) return;
-    
-    mm7["form"] = function(formElement) {
+(function (mm7) {
+
+    if (mm7.missing(["document","array"], true) > -1)
+        return;
+
+    mm7["form"] = function (formElement) {
         return {
             form: mm7.node(formElement),
-            setSelect: function(select, value) {
+            setSelect: function (select, value) {
                 if (value == null)
                     return;
                 if (typeof value === "object") {
@@ -503,21 +515,21 @@ var mm7 = {
                     }
                 }
             },
-            isRealFormElement : function(elm) {
-            	if ( (elm.type) && ( elm.type.toLowerCase() !== "fieldset" ) && (elm.name!=="") ) {
-            		return true;
-            	} else {
-            		return false;
-            	}
+            isRealFormElement: function (elm) {
+                if ((elm.type) && (elm.type.toLowerCase() !== "fieldset") && (elm.name !== "")) {
+                    return true;
+                } else {
+                    return false;
+                }
             },
-            get: function(defaults) {
+            get: function (defaults) {
                 var values = {};
                 if ((defaults !== null) && (typeof defaults === "object"))
                     values = defaults;
 
                 for (var i = 0; i < this.form.elements.length; i++) {
                     var elm = this.form.elements[i];
-                    if ( this.isRealFormElement(elm) ) {
+                    if (this.isRealFormElement(elm)) {
                         var type = elm.type.toLowerCase();
                         var name = elm.name;
                         var value = elm.value;
@@ -547,30 +559,40 @@ var mm7 = {
                         } else {
                             values[name] = value;
                         }
-                    }                                        
+                    }
                 }
                 return values;
             },
-            clear:function() {
-                this.form.reset();
+
+            clear: function (exNames) {
                 for (var i = 0; i < this.form.elements.length; i++) {
-                	var elm = this.form.elements[i];
-                	if ( this.isRealFormElement(elm) ) {                		
+                    var elm = this.form.elements[i];
+                    if (this.isRealFormElement(elm)) {
                         var type = elm.type.toLowerCase();
-                        var name = elm.name;
-                        if (name !== "") {
-                            if ( type === "hidden") {
+                        if ((mm7.type(exNames) !== "array") || (mm7.array.indexOf(exNames,elm.name) < 0)) {
+                            if ((type === "checkbox") || (type === "radio")) {
+                                if (elm.value == "") {
+                                    elm.checked = 1;
+                                } else {
+                                    elm.checked = 0;
+                                }
+                            } else if (type === "select-one") {
+                                this.setSelect(elm, "");
+                            } else if (type === "select-multiple") {
+                                this.setSelect(elm, "");
+                            } else {
                                 elm.value = "";
                             }
                         }
-                	}                    
+                    }
                 }
             },
-            set: function(values,clear) {
+
+            set: function (values, clear) {
                 for (var i = 0; i < this.form.elements.length; i++) {
                     var elm = this.form.elements[i];
-                    if ( this.isRealFormElement(elm) ) {
-                    	var type = elm.type.toLowerCase();
+                    if (this.isRealFormElement(elm)) {
+                        var type = elm.type.toLowerCase();
                         var name = elm.name;
                         if (typeof values[name] !== "undefined") {
                             var value = values[name];
@@ -593,12 +615,12 @@ var mm7 = {
                                     elm.checked = 0;
                                 } else if (typeof elm.selectedIndex !== "undefined") {
                                     elm.selectedIndex = -1;
-                                } else if ( typeof elm.value !== "undefined" ) {
+                                } else if (typeof elm.value !== "undefined") {
                                     elm.value = "";
                                 }
-                            }                            
+                            }
                         }
-                    }                    
+                    }
                 }
             }
         };
@@ -1258,6 +1280,16 @@ t.start();
         },
         isInteger: function(n) {
             return n === +n && n === (n | 0);
+        },
+        floatFormat:function(n,c,d,t){
+            if ( !this.isFloat(n) ) return "";
+            c = isNaN(c = Math.abs(c)) ? 2 : c;
+            d = d === undefined ? "." : d;
+            t = t === undefined ? "," : t; 
+            var s = n < 0 ? "-" : "";
+            var i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c)));
+            var j = (j = i.length) > 3 ? j % 3 : 0;
+            return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
         }
     };
 })(mm7);(function(mm7) {
@@ -1396,6 +1428,13 @@ t.start();
         }
 
         return array;
+    };
+    
+    mm7["array"]["indexOf"] = function(array,item) {
+        for(var i=0; i<array.length; i++) {
+            if (array[i] === item) return i;
+        }
+        return -1;
     };
 
 

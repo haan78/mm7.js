@@ -97,6 +97,13 @@
 
         return array;
     };
+    
+    mm7["array"]["indexOf"] = function(array,item) {
+        for(var i=0; i<array.length; i++) {
+            if (array[i] === item) return i;
+        }
+        return -1;
+    };
 
 
 })(mm7);

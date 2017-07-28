@@ -1,12 +1,13 @@
 
-(function(mm7) {
-    
-    if (mm7.missing(["document"],true)>-1) return;
-    
-    mm7["form"] = function(formElement) {
+(function (mm7) {
+
+    if (mm7.missing(["document","array"], true) > -1)
+        return;
+
+    mm7["form"] = function (formElement) {
         return {
             form: mm7.node(formElement),
-            setSelect: function(select, value) {
+            setSelect: function (select, value) {
                 if (value == null)
                     return;
                 if (typeof value === "object") {
@@ -24,21 +25,21 @@
                     }
                 }
             },
-            isRealFormElement : function(elm) {
-            	if ( (elm.type) && ( elm.type.toLowerCase() !== "fieldset" ) && (elm.name!=="") ) {
-            		return true;
-            	} else {
-            		return false;
-            	}
+            isRealFormElement: function (elm) {
+                if ((elm.type) && (elm.type.toLowerCase() !== "fieldset") && (elm.name !== "")) {
+                    return true;
+                } else {
+                    return false;
+                }
             },
-            get: function(defaults) {
+            get: function (defaults) {
                 var values = {};
                 if ((defaults !== null) && (typeof defaults === "object"))
                     values = defaults;
 
                 for (var i = 0; i < this.form.elements.length; i++) {
                     var elm = this.form.elements[i];
-                    if ( this.isRealFormElement(elm) ) {
+                    if (this.isRealFormElement(elm)) {
                         var type = elm.type.toLowerCase();
                         var name = elm.name;
                         var value = elm.value;
@@ -68,30 +69,40 @@
                         } else {
                             values[name] = value;
                         }
-                    }                                        
+                    }
                 }
                 return values;
             },
-            clear:function() {
-                this.form.reset();
+
+            clear: function (exNames) {
                 for (var i = 0; i < this.form.elements.length; i++) {
-                	var elm = this.form.elements[i];
-                	if ( this.isRealFormElement(elm) ) {                		
+                    var elm = this.form.elements[i];
+                    if (this.isRealFormElement(elm)) {
                         var type = elm.type.toLowerCase();
-                        var name = elm.name;
-                        if (name !== "") {
-                            if ( type === "hidden") {
+                        if ((mm7.type(exNames) !== "array") || (mm7.array.indexOf(exNames,elm.name) < 0)) {
+                            if ((type === "checkbox") || (type === "radio")) {
+                                if (elm.value == "") {
+                                    elm.checked = true;
+                                } else {
+                                    elm.checked = false;
+                                }
+                            } else if (type === "select-one") {
+                                this.setSelect(elm, "");
+                            } else if (type === "select-multiple") {
+                                this.setSelect(elm, "");
+                            } else {
                                 elm.value = "";
                             }
                         }
-                	}                    
+                    }
                 }
             },
-            set: function(values,clear) {
+
+            set: function (values, clear) {
                 for (var i = 0; i < this.form.elements.length; i++) {
                     var elm = this.form.elements[i];
-                    if ( this.isRealFormElement(elm) ) {
-                    	var type = elm.type.toLowerCase();
+                    if (this.isRealFormElement(elm)) {
+                        var type = elm.type.toLowerCase();
                         var name = elm.name;
                         if (typeof values[name] !== "undefined") {
                             var value = values[name];
@@ -114,12 +125,12 @@
                                     elm.checked = 0;
                                 } else if (typeof elm.selectedIndex !== "undefined") {
                                     elm.selectedIndex = -1;
-                                } else if ( typeof elm.value !== "undefined" ) {
+                                } else if (typeof elm.value !== "undefined") {
                                     elm.value = "";
                                 }
-                            }                            
+                            }
                         }
-                    }                    
+                    }
                 }
             }
         };

@@ -5,6 +5,17 @@
     		s = single ? s.replace(/'/g, '\'') : s.replace(/"/g, '\'');    	
 	    	return s.replace(/(?:\r\n|\r|\n|\t)/g, '');
     	},
+        fixAll:function(Obj,single) {
+            var o = Obj;
+            
+            if ( typeof o !== "object" ) return o;
+            
+            for ( var k in o ) {
+                if ( typeof o[k] === "string"  ) o[k] = this.fix(o[k],single);
+                else if ( typeof o[k] === "object" ) o[k] = this.fixAll(o[k],single);
+            }
+            return o;
+        },
         toObject: function(json) {
             var response = null;
             try {
