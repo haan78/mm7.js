@@ -15,6 +15,14 @@
             });
             return vars;
         },
+        add:function(url,part){
+           if ( part==="" ) return;
+           if ( url.indexOf("?") > -1 ) {
+               return url+"&"+part;
+           } else {
+               return url+"?"+part;
+           }
+        },
         toQuery: function(obj, key) {
             if (obj === null)
                 return "";
