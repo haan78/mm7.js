@@ -1,4 +1,4 @@
-/* BUILD Sal 01.08.2017@14-28-32,43  
+/* BUILD Sal 01.08.2017@16-38-56,62  
 MM7 Java Script Part */ 
 var mm7 = {
     lastError: "",
@@ -418,16 +418,17 @@ var mm7 = {
             }
         }
     };
-})(mm7);(function(mm7) {
-    if (mm7.missing(["url","json"],true)>-1) return;
+})(mm7);(function (mm7) {
+    if (mm7.missing(["url", "json"], true) > -1)
+        return;
     mm7["http"] = {
-        defaults:{
-            requestDataType:"json", // [json,query]
-            responseDataType:"json", // [json,text]
-            method:"POST", // [POST,GET]
-            charset:"UTF-8"
+        defaults: {
+            requestDataType: "json", // [json,query]
+            responseDataType: "json", // [json,text]
+            method: "POST", // [POST,GET]
+            charset: "UTF-8"
         },
-        createHTTPRequest:function() {
+        createHTTPRequest: function () {
             //Building HTTP Request
             var HTTP = null;
             if (window.XMLHttpRequest) { //w3
@@ -440,29 +441,32 @@ var mm7 = {
                     try {
                         HTTP = new ActiveXObject("Microsoft.XMLHTTP");
                     } catch (ex) {
-                        mm7.error(ex.name + " /" + ex.message,this.onError);
+                        mm7.error(ex.name + " /" + ex.message, this.onError);
                         return false;
                     } //catch sub
                 } //catch first
-            } else { 
+            } else {
                 mm7.error("HTTPRequest is not supported by engine");
                 return null;
             }
             return HTTP;
         },
-        request:function(url,data,callback,settings) {
-            var sett = mm7.extend(mm7.http.defaults,settings);
+        request: function (url, data, callback, settings) {
+            var sett = mm7.extend(mm7.http.defaults, settings);
             var http = mm7.http.createHTTPRequest();
-            if (http===null) return;
-            
+            if (http === null)
+                return;
+
             var requestStr = "";
-            if ( sett.requestDataType === "json" ) {
-                requestStr = mm7.json.toString(data);
-            } else {
-                requestStr = encodeURI(mm7.url.toQuery(data));
+            if (( typeof data !=="undefined" ) && (data !== null) && (typeof data === "object")) {
+                if (sett.requestDataType === "json") {
+                    requestStr = mm7.json.toString(mm7.json.fixAll(data));
+                } else {
+                    requestStr = encodeURI(mm7.url.toQuery(data));
+                }
             }
-            
-            http.onreadystatechange = function() {
+
+            http.onreadystatechange = function () {
                 if (this.readyState === 4) {
                     var response;
                     if (sett.responseDataType === "json") {
@@ -470,25 +474,28 @@ var mm7 = {
                     } else {
                         response = this.responseText;
                     }
-                    if ((typeof callback === "function") && (response !== null)) callback(response);
+                    if (typeof callback === "function")
+                        callback(response);
                 }
-            };
-            
-            if (sett.method==="POST") {
+            };           
+
+            if (sett.method === "POST") {
                 http.open("POST", url, true);
-                http.setRequestHeader("Content-type", "application/x-www-form-urlencoded;charset="+sett.charset);
-                http.setRequestHeader("Content-length", requestStr.length);
+                if ( sett.responseDataType === "json" ) {
+                    http.setRequestHeader("Content-type", "application/json;charset=" + sett.charset);
+                } else {
+                    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded;charset=" + sett.charset);
+                }
+                //http.setRequestHeader("Content-length", requestStr.length);
                 http.send(requestStr);
             } else {
-                http.open("GET", mm7.url.add(url,requestStr), true);
+                http.open("GET", mm7.url.add(url, requestStr), true);
                 http.send();
             }
         }
- 
+
     };
 })(mm7);
-
-
 
 (function (mm7) {
 
@@ -1861,4 +1868,85 @@ t.start();
     };
 })(mm7);
 
+
+
+(function (mm7) {
+    if (mm7.missing(["http","document","array"],true)>-1) return;
+    
+    
+    var session = function(holder) {
+        this.list = [];
+        this._holder = holder;
+        
+        var randomId = function(){
+            return Math.floor(Math.random()*80000);
+        };
+        
+        this.clear = function(){
+            list = [];
+        };
+        
+        var findJs = function(src) { //private
+            for (var i = 0; i < document.getElementsByTagName("script").length; i++) {
+                if (document.getElementsByTagName("script")[i].src.indexOf(src) > -1 )
+                    return i;
+            }
+            return -1;
+        };
+        
+        this.js = function(src) {
+            if (mm7.array.indexOf(this.list,src)<0) {
+                this.list.push(src);
+            }
+            return this;
+        };
+        
+        this.loadJs = function(i,callback) {
+            var self = this;
+            if  (findJs( this.list[i] ) >-1) {
+                if ( i === this.list.length-1  ) {
+                    if ( typeof callback === "function" ) callback(true,this.list[i],i);
+                } else {
+                    this.loadJs(i+1,callback);
+                }
+            }
+            var script = document.createElement('script');
+            script.setAttribute("type", "text/javascript");
+            var src = mm7.url.add(this.list[i],"scriptId="+randomId());
+            script.setAttribute("src", src  );
+            script.onerror = function() {
+                mm7.error("Dynamic script loading error ("+this.src+")");
+                if ( typeof callback === "function" ) callback(false,this.src,i);
+            };
+            script.onload = function() {
+                if ( i === self.list.length-1  ) {
+                    if ( typeof callback === "function" ) callback(true,self.list[i],i);
+                } else {
+                    self.loadJs(i+1,callback);
+                }
+            };
+            document.getElementsByTagName("head")[0].appendChild(script);
+        };
+        
+        this.load = function(url,callback) {
+            var self = this;
+            
+            mm7.http.request(url,null,function(response){
+                self._holder.innerHTML = response;
+                if (self.list.length > 0) self.loadJs(0,callback);
+                self.clear();
+            },{ responseDataType:"text" });            
+            
+        };
+        
+    };
+    
+    mm7["dhtml"] = {
+        
+        element:function(elm){
+            var holder = mm7.node(elm);
+            return new session(holder);
+        }
+    };
+})(mm7);
 
