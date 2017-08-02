@@ -12,7 +12,7 @@
         };
         
         this.clear = function(){
-            list = [];
+            this.list = [];
         };
         
         var findJs = function(src) { //private
