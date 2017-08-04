@@ -1,4 +1,4 @@
-/* BUILD Cum 04.08.2017@11-38-56,40  
+/* BUILD Cum 04.08.2017@12-00-15,40  
 MM7 Java Script Part */ 
 var mm7 = {
     lastError: "",
@@ -1769,6 +1769,18 @@ t.start();
         this.list = [];        
         this.onerror = function () {};
         this.moduleId = "";
+        
+        this.updateUrl = function(url) {
+            if (mm7.dmodule.defaults.sendModuleId) {
+                var str = this.defaults.callIdTag +"="+this.moduleId;
+                if ( mm7.dmodule.defaults.sendRandomId ) {
+                    str +="_"+randomId();
+                }
+                return mm7.url.add(url,str);
+            } else {
+                return url;
+            }
+        };
 
         this.error = function (callback) {
             this.onerror = callback;
@@ -1783,16 +1795,16 @@ t.start();
             return this;
         };
 
-        this.json = function (name, url, data, options) {
-            var obj = {type:"json", "name": name, "url": url, "data": data, "options": options};
+        this.json = function (name, url, requestData, options) {
+            var obj = {type:"json", "name": name, "url": url, "data": requestData, "options": options};
             if (mm7.array.indexOf(this.list, obj) < 0) {
                 this.list.push(obj);
             }
             return this;
         };
 
-        this.html = function (element, url, data, options) {
-            var obj = {type:"html", "element": mm7.node(element), "url": url, "data": data, "options": options};
+        this.html = function (element, url, requestData, options) {
+            var obj = {type:"html", "element": mm7.node(element), "url": url, "data": requestData, "options": options};
             if (mm7.array.indexOf(this.list, obj) < 0) {
                 this.list.push(obj);
             }
@@ -1831,9 +1843,9 @@ t.start();
                 var link = document.createElement("link");
                 link.setAttribute("rel", "stylesheet");
                 link.setAttribute("type", "text/css");
-                link.setAttribute("href", mm7.url.add(this.list[i].src, mm7.dhtml.defaults.callIdTag + "=" + this.moduleId));
+                link.setAttribute("href", this.updateUrl(this.list[i].src));
                 document.getElementsByTagName("head")[0].appendChild(link);
-                mm7.dhtml.modules[ this.moduleId ].parts.push({type: "css", element: link});                
+                mm7.dmodule.modules[ this.moduleId ].parts.push({type: "css", element: link});                
             }
             this.next(i + 1, callback);
         };
@@ -1843,7 +1855,7 @@ t.start();
                 var self = this;
                 var script = document.createElement('script');
                 script.setAttribute("type", "text/javascript");
-                var url = mm7.url.add(this.list[i].src, mm7.dhtml.defaults.callIdTag + "=" + self.moduleId);
+                var url = this.updateUrl(this.list[i].src);
                 script.setAttribute("src", url);
                 script.onerror = function () {
                     mm7.error("Dynamic script loading error (" + this.src + ")");
@@ -1854,7 +1866,7 @@ t.start();
                     self.next(i + 1, callback);
                 };
                 document.getElementsByTagName("head")[0].appendChild(script);
-                mm7.dhtml.modules[ self.moduleId ].parts.push({type: "css", element: script});
+                mm7.dmodule.modules[ self.moduleId ].parts.push({type: "css", element: script});
             } else {
                 this.next(i + 1, callback);
             }
@@ -1864,9 +1876,9 @@ t.start();
             var self = this;
             var obj = mm7.extend(mm7.http.defaults,this.list[i].options);
             obj.responseDataType = "text";
-            mm7.http.request(this.list[i].url, this.list[i].data, function (response) {                
+            mm7.http.request(this.updateUrl(this.list[i].url), this.list[i].data, function (response) {                
                 self.list[i].element.innerHTML = response;
-                mm7.dhtml.modules[self.moduleId].parts.push({ type:"html",element:self.list[i].element });
+                mm7.dmodule.modules[self.moduleId].parts.push({ type:"html",element:self.list[i].element });
                 self.next(i+1,callback);
             },obj);
         };
@@ -1875,8 +1887,8 @@ t.start();
             var self = this;
             var obj = mm7.extend(mm7.http.defaults,this.list[i].options);
             obj.responseDataType = "json";
-            mm7.http.request(this.list[i].url, this.list[i].data, function (response) {                
-                mm7.dhtml.modules[ self.moduleId ].data[ self.list[i].name ] = response;
+            mm7.http.request(this.updateUrl(this.list[i].url), this.list[i].data, function (response) {                
+                mm7.dmodule.modules[ self.moduleId ].data[ self.list[i].name ] = response;
                 self.next(i+1,callback);
             },obj);
         };
@@ -1888,11 +1900,13 @@ t.start();
 
     };
 
-    mm7["dhtml"] = {
+    mm7["dmodule"] = {
 
         defaults: {
-            callIdTag: "scriptId"
-        },
+            callIdTag: "dmodule",
+            sendRandomId:true,
+            sendModuleId:true
+        },       
 
         modules: {},
 
@@ -1929,6 +1943,10 @@ t.start();
         
         exist:function(name) {
             return this.modules.hasOwnProperty(name);
+        },
+        
+        module:function(name) {
+            return modules[name];
         },
 
         "new": function (name) {

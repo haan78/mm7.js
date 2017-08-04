@@ -26,7 +26,7 @@ type ..\src\mm7.tab.js >> ..\dist\mm7.all.in.one.js
 type ..\src\mm7.roller.js >> ..\dist\mm7.all.in.one.js
 type ..\src\mm7.math.js >> ..\dist\mm7.all.in.one.js
 type ..\src\mm7.window.js >> ..\dist\mm7.all.in.one.js
-type ..\src\mm7.dhtml.js >> ..\dist\mm7.all.in.one.js
+type ..\src\mm7.dmodule.js >> ..\dist\mm7.all.in.one.js
 
 
 java -jar yuicompressor-2.4.8.jar ..\dist\mm7.all.in.one.js -o ..\dist\mm7.all.in.one.min.js
