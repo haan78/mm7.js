@@ -1,4 +1,4 @@
-/* BUILD Per 03.08.2017@10-08-02,10  
+/* BUILD Cum 04.08.2017@11-38-56,40  
 MM7 Java Script Part */ 
 var mm7 = {
     lastError: "",
@@ -69,135 +69,6 @@ var mm7 = {
         }
     }
 };
-// "loader" is a Java Scirpt object. Which allows to load CSS and JS libary dynamiclly.
-//
-// There is no dependence
-//
-// Methods
-// mm7.loader.js(fileName) Adds a JavaSicript libary
-// mm7.loader.css(fileName) Adds a CSS file link
-// mm7.loader.fnc(fnc) adds a function wich is call after all CSS and JS file load.
-// mm7.loader.init() Load all CSS and JS file into document. It also call functions which are added by mm7.loader.fnc method
-// mm7.loader.init() must be called after all js, css and function deffinations.
-// mm7.loader.register() is register a call of mm7.loader.init() method into window.onLoad event.
-// mm7.loader.init() is not necessary when mm7.loader.register() called
-// Strongly recomanded mm7.loader.init() method shuld be call end of html document.
-
-(function(mm7) {
-
-    if (mm7["loader"])
-        return;
-
-    mm7["loader"] = {
-        registered:false,
-        cssList: new Array(),
-        jsList: new Array(),
-        jsIterator: 0, //private
-
-
-        fncList: new Array(), // private
-        fnc: function(fnc) {
-            if (typeof fnc === "function") {
-                this.fncList.push(fnc);
-            }
-        },
-        findJs: function(file) { //private
-            for (var i = 0; i < document.getElementsByTagName("script").length; i++) {
-                if (document.getElementsByTagName("script")[i].src === file)
-                    return i;
-            }
-            return -1;
-        },
-        findCss: function(file) { //private
-            for (var i = 0; i < document.getElementsByTagName("link").length; i++) {
-                if (document.getElementsByTagName("link")[i].href === file)
-                    return i;
-            }
-            return -1;
-        },
-        css: function(file) { //public
-            this.cssList.push(file);
-        },
-        js: function(file) { //public
-            this.jsList.push(file);
-        },
-        putCss: function(file) { //private
-            if (this.findCss(file) > -1)
-                return;
-            var link = document.createElement("link");
-            link.setAttribute("rel", "stylesheet");
-            link.setAttribute("type", "text/css");
-            link.setAttribute("href", file);
-            document.getElementsByTagName("head")[0].appendChild(link);
-        },
-        putJs: function(file) { //private
-            if (this.findJs(file) > -1)
-                return;
-            var script = document.createElement('script');
-            script.setAttribute("type", "text/javascript");
-            script.setAttribute("src", file);
-            script.onerror = function() {
-                mm7.error("Dynamic script loading error ("+this.src+")");
-                if (mm7.loader.isComplete()) {
-                    mm7.loader.doComplete();
-                } else {
-                    mm7.loader.loadNextJs();
-                }
-            };
-            script.onload = function() {
-                if (mm7.loader.isComplete()) {
-                    mm7.loader.doComplete();
-                } else {
-                    mm7.loader.loadNextJs();
-                }
-            };
-            document.getElementsByTagName("head")[0].appendChild(script);
-        },
-        doComplete: function() { //private
-
-            for (var i = 0; i < mm7.loader.fncList.length; i++) {
-                mm7.loader.fncList[i](i);
-            }
-        },
-        isComplete: function() { //public
-            if (mm7.loader.jsIterator < mm7.loader.jsList.length)
-                return false;
-            else
-                return true;
-        },
-        loadNextJs: function() { //private
-            this.jsIterator++;
-            this.putJs(this.jsList[this.jsIterator - 1]);
-        },
-        init: function() { //public
-            for (var i = 0; i < this.cssList.length; i++) {
-                this.putCss(this.cssList[i]);
-            }
-            if (this.jsList.length > 0) this.loadNextJs(); else this.doComplete();
-        },
-        register:function() {
-            if (this.registered) return;
-            this.registered = true;
-            window.addEventListener("load",function(evt){ mm7.loader.init(); });
-        }
-    };
-    
-    //shortcuts
-    mm7["js"] = function(file) {
-        mm7.loader.js(file);
-    };
-    mm7["css"] = function(file) {
-        mm7.loader.css(file);
-    };
-    mm7["fnc"] = function(f) {
-        mm7.loader.fnc(f);
-    };
-    mm7["init"] = function() {
-        mm7.loader.init();
-    }; 
-    //Optinal
-    mm7.loader.register();
-})(mm7);
 (function(mm7) {
     mm7["document"] = {
         create: function(html) {
@@ -1871,190 +1742,215 @@ t.start();
 
 
 (function (mm7) {
-    if (mm7.missing(["http","document","array"],true)>-1) return;
-    
-    
-    var session = function(holder) {
-        this.listJs = [];
-        this.listCss = [];
-        this._holder = holder;
-        
-        this.requestData = null;
-        this.requestDataType = mm7.dhtml.defaults.requestDataType;
-        this.cbInfo = null;
-        
-        var lastLoadIndex = "";
-        
-        var randomId = function(){
-            return Math.floor(Math.random()*80000);
-        };
-        
-        this.clear = function(){
-            this.listJs = [];
-            this.listCss = [];
-        };
-        
-        var findJs = function(src) { //private
-            for (var i = 0; i < document.getElementsByTagName("script").length; i++) {
-                if (document.getElementsByTagName("script")[i].src.indexOf(src) > -1 )
-                    return i;
-            }
-            return -1;
-        };
-        
-        var findCss = function(src) { //private
-            for (var i = 0; i < document.getElementsByTagName("link").length; i++) {
-                if (document.getElementsByTagName("link")[i].href.indexOf(src)>-1 )
-                    return i;
-            }
-            return -1;
-        };
-        
-        this.js = function(src) {
-            if (mm7.array.indexOf(this.listJs,src)<0) {
-                this.listJs.push(src);
-            }
+    if (mm7.missing(["http", "document", "array"], true) > -1)
+        return;
+
+    var randomId = function () {
+        return Math.floor(Math.random() * 80000);
+    };
+
+    var findJs = function (src) { //private
+        for (var i = 0; i < document.getElementsByTagName("script").length; i++) {
+            if (document.getElementsByTagName("script")[i].src.indexOf(src) > -1)
+                return i;
+        }
+        return -1;
+    };
+
+    var findCss = function (src) { //private
+        for (var i = 0; i < document.getElementsByTagName("link").length; i++) {
+            if (document.getElementsByTagName("link")[i].href.indexOf(src) > -1)
+                return i;
+        }
+        return -1;
+    };
+
+    var create = function () {
+        this.list = [];        
+        this.onerror = function () {};
+        this.moduleId = "";
+
+        this.error = function (callback) {
+            this.onerror = callback;
             return this;
-        };    
-        
-        this.css = function(src) {
-            if (mm7.array.indexOf(this.listJs,src)<0) {
-                this.listCss.push(src);
+        };
+
+        this.js = function (src) {
+            var obj = {type: "js", "src": src};
+            if (mm7.array.indexOf(this.list, obj) < 0) {
+                this.list.push(obj);
             }
             return this;
         };
-        
-        
-        this.data = function(data) {
-            this.requestData = data;            
+
+        this.json = function (name, url, data, options) {
+            var obj = {type:"json", "name": name, "url": url, "data": data, "options": options};
+            if (mm7.array.indexOf(this.list, obj) < 0) {
+                this.list.push(obj);
+            }
             return this;
-        };               
-        
-        this.loadJs = function(i,callback) {
-            var self = this;
-            self.cbInfo.lastJsListIndex = i;
-            if  (findJs( self.listJs[i] ) < 0 ) {
+        };
+
+        this.html = function (element, url, data, options) {
+            var obj = {type:"html", "element": mm7.node(element), "url": url, "data": data, "options": options};
+            if (mm7.array.indexOf(this.list, obj) < 0) {
+                this.list.push(obj);
+            }
+            return this;
+        };
+
+        this.css = function (src) {
+            var obj = {type: "css", "src": src};
+            if (mm7.array.indexOf(this.list, obj) < 0) {
+                this.list.push(obj);
+            }
+            return this;
+        };
+
+        this.next = function (i, callback) {
+            if (i > this.list.length - 1) {
+                if (typeof callback)
+                    callback(this.moduleId);
+            } else {
+                var type = this.list[i].type;
+                if (type === "js") {
+                    this.loadJs(i, callback);
+                } else if (type === "json") {
+                    this.loadJson(i, callback);
+                } else if (type === "html") {
+                    this.loadHtml(i, callback);
+                } else if (type === "css") {
+                    this.loadCss(i, callback);
+                }
+            }
+        };
+
+        this.loadCss = function (i, callback) {
+            
+            if ( findCss( this.list[i].src )<0 ) {
+                var link = document.createElement("link");
+                link.setAttribute("rel", "stylesheet");
+                link.setAttribute("type", "text/css");
+                link.setAttribute("href", mm7.url.add(this.list[i].src, mm7.dhtml.defaults.callIdTag + "=" + this.moduleId));
+                document.getElementsByTagName("head")[0].appendChild(link);
+                mm7.dhtml.modules[ this.moduleId ].parts.push({type: "css", element: link});                
+            }
+            this.next(i + 1, callback);
+        };
+
+        this.loadJs = function (i, callback) {
+            if (findJs(this.list[i].src) < 0) {
+                var self = this;
                 var script = document.createElement('script');
-                script.setAttribute("type", "text/javascript");  
-                var url = mm7.url.add(self.listJs[i], mm7.dhtml.defaults.callIdTag+"="+randomId());
-                script.setAttribute("src", url  );
-                //script.setAttribute("data-list-length",self.listJs.length);
-                script.onerror = function() {
-                    mm7.error("Dynamic script loading error ("+this.src+")");
-                    self.cbInfo.type = "error";
-                    if ( typeof callback === "function" ) callback(self.cbInfo);
+                script.setAttribute("type", "text/javascript");
+                var url = mm7.url.add(this.list[i].src, mm7.dhtml.defaults.callIdTag + "=" + self.moduleId);
+                script.setAttribute("src", url);
+                script.onerror = function () {
+                    mm7.error("Dynamic script loading error (" + this.src + ")");
+                    if (typeof self.onerror === "function")
+                        onerror(self.moduleId,this.src);
                 };
-                script.onload = function() {
-                    if ( i === self.cbInfo.jsList.length-1  ) {
-                        if ( typeof callback === "function" ) callback(self.cbInfo);
-                    } else {                                                                        
-                        self.loadJs(i+1,callback);
-                    }
+                script.onload = function () {
+                    self.next(i + 1, callback);
                 };
                 document.getElementsByTagName("head")[0].appendChild(script);
-                mm7.dhtml.list[ lastLoadIndex ].scripts.push(script);
+                mm7.dhtml.modules[ self.moduleId ].parts.push({type: "css", element: script});
             } else {
-                if ( i === self.listJs.length-1  ) {
-                    if ( typeof callback === "function" ) callback(self.cbInfo)
-                } else {                    
-                    this.loadJs(i+1,callback);
-                }
-            }         
-            
+                this.next(i + 1, callback);
+            }
         };
-        
-        this.load = function(url,callback) {
+
+        this.loadHtml = function (i, callback) {
             var self = this;
-            
-            lastLoadIndex = "mdl"+randomId();
-            while ( mm7.dhtml.list.hasOwnProperty(lastLoadIndex) ) {
-                lastLoadIndex = "mdl"+randomId();
-            }           
-            
-            mm7.dhtml.list[lastLoadIndex] = {
-                scripts:[],
-                links:[],
-                element:this._holder
-            };
-            
-            this.cbInfo = {
-                "type":"success",
-                "nodeId":this._holder.id,
-                "url":url,
-                "jsList":this.listJs,
-                "cssList":this.listCss,
-                "lastJsListIndex":-1,
-                "loadIndex":lastLoadIndex,
-                "message":""
-            };
-            
-            //Loading css files
-            for (var i=0; i<this.listCss.length; i++) {
-                if ( findCss( this.listCss[i]  ) < 0 ) {
-                    var link = document.createElement("link");
-                    link.setAttribute("rel", "stylesheet");
-                    link.setAttribute("type", "text/css");       
-                    link.setAttribute("href", this.listCss[i]);
-                    document.getElementsByTagName("head")[0].appendChild(link);
-                    mm7.dhtml.list[ lastLoadIndex ].links.push(link);
-                }            
-            }
-            
-            mm7.http.request(url,this.requestData,function(response){
-                self._holder.innerHTML = response;
-                if (self.listJs.length > 0) {
-                    self.loadJs(0,callback);
-                } else {
-                    if ( typeof callback ==="function" ) callback(cbInfo);
-                }
-                self.clear();
-            },{ responseDataType:"text",requestDataType:this.requestDataType });
-            
-            return lastLoadIndex;
-            
+            var obj = mm7.extend(mm7.http.defaults,this.list[i].options);
+            obj.responseDataType = "text";
+            mm7.http.request(this.list[i].url, this.list[i].data, function (response) {                
+                self.list[i].element.innerHTML = response;
+                mm7.dhtml.modules[self.moduleId].parts.push({ type:"html",element:self.list[i].element });
+                self.next(i+1,callback);
+            },obj);
         };
         
+        this.loadJson = function(i,callback) {
+            var self = this;
+            var obj = mm7.extend(mm7.http.defaults,this.list[i].options);
+            obj.responseDataType = "json";
+            mm7.http.request(this.list[i].url, this.list[i].data, function (response) {                
+                mm7.dhtml.modules[ self.moduleId ].data[ self.list[i].name ] = response;
+                self.next(i+1,callback);
+            },obj);
+        };
+
+        this.load = function (callback) {
+            this.next(0,callback);
+            return this.moduleId;
+        };
+
     };
-    
+
     mm7["dhtml"] = {
-        
-        defaults:{
-            requestDataType:"json",
-            callIdTag:"scriptId"
+
+        defaults: {
+            callIdTag: "scriptId"
         },
-        
-        list:{},        
-        
-        remove:function(mdl){
-            if (!this.list.hasOwnProperty(mdl)) return false;
-            var m = this.list[mdl];
-            var head = document.getElementsByTagName('head')[0]
-            for ( var i=m.scripts.length-1; i> -1; i-- ) {
-                head.removeChild(m.scripts[i]);
+
+        modules: {},
+
+        remove: function (mdl) {
+            if (!this.modules.hasOwnProperty(mdl))
+                return false;
+            var m = this.modules[mdl];
+            var head = document.getElementsByTagName('head')[0];
+            for (var i = m.parts.length - 1; i > -1; i--) {
+                if ( m.parts[i].type === "css" ) {
+                    head.removeChild(m.parts[i].element);
+                } else if ( m.parts[i].type === "js" ) {
+                    head.removeChild(m.parts[i].element);
+                } else if ( m.parts[i].type === "html" ) {
+                    m.parts[i].element.innerHTML = "";
+                }
             }
-            
-            for ( var i=m.links.length-1; i> -1; i-- ) {
-                head.removeChild(m.links[i]);
-            }
-            
-            m.element.innerHTML = "";
-            
-            delete this.list[mdl];
-            
+
+            delete this.modules[mdl];
+
             return true;
-            
+
         },
-        
-        
-        clear:function() {
-            for (var k in this.list) {
+
+        clear: function () {
+            for (var k in this.modules) {
                 this.remove(k);
             }
         },
         
-        element:function(elm){
-            var holder = mm7.node(elm);
-            return new session(holder);
+        data:function(mdl) {
+            return modules[mdl].data;
+        },
+        
+        exist:function(name) {
+            return this.modules.hasOwnProperty(name);
+        },
+
+        "new": function (name) {
+            var mid;
+            if ( !name ) {
+                mid = "mdl" + randomId();
+                while (this.modules.hasOwnProperty(mid)) {
+                    mid = "mdl" + randomId();
+                }
+            } else {
+                mid = name;
+                this.remove(mid);
+            }           
+            
+            this.modules[mid] = {
+                data: {},
+                parts: []
+            };
+
+            var m = new create();
+            m.moduleId = mid;
+            return m;
         }
     };
 })(mm7);

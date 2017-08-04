@@ -6,7 +6,6 @@ echo /* BUILD %timestamp%  > ..\dist\mm7.all.in.one.js
 echo MM7 Java Script Part */ >> ..\dist\mm7.all.in.one.js
 
 type ..\src\mm7.js >> ..\dist\mm7.all.in.one.js
-type ..\src\mm7.loader.js >> ..\dist\mm7.all.in.one.js
 type ..\src\mm7.document.js >> ..\dist\mm7.all.in.one.js
 type ..\src\mm7.url.js >> ..\dist\mm7.all.in.one.js
 type ..\src\mm7.json.js >> ..\dist\mm7.all.in.one.js
