@@ -1,4 +1,4 @@
-/* BUILD Cum 04.08.2017@12-00-15,40  
+/* BUILD Cum 04.08.2017@13-20-37,09  
 MM7 Java Script Part */ 
 var mm7 = {
     lastError: "",
@@ -1772,7 +1772,7 @@ t.start();
         
         this.updateUrl = function(url) {
             if (mm7.dmodule.defaults.sendModuleId) {
-                var str = this.defaults.callIdTag +"="+this.moduleId;
+                var str = mm7.dmodule.defaults.callIdTag +"="+this.moduleId;
                 if ( mm7.dmodule.defaults.sendRandomId ) {
                     str +="_"+randomId();
                 }

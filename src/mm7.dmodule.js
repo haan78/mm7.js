@@ -30,7 +30,7 @@
         
         this.updateUrl = function(url) {
             if (mm7.dmodule.defaults.sendModuleId) {
-                var str = this.defaults.callIdTag +"="+this.moduleId;
+                var str = mm7.dmodule.defaults.callIdTag +"="+this.moduleId;
                 if ( mm7.dmodule.defaults.sendRandomId ) {
                     str +="_"+randomId();
                 }
