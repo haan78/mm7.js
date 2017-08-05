@@ -1,4 +1,4 @@
-/* BUILD Cum 04.08.2017@13-20-37,09  
+/* BUILD Cmt 05.08.2017@12-13-15,96  
 MM7 Java Script Part */ 
 var mm7 = {
     lastError: "",
@@ -1768,12 +1768,12 @@ t.start();
     var create = function () {
         this.list = [];        
         this.onerror = function () {};
-        this.moduleId = "";
+        this.contentId = "";
         
         this.updateUrl = function(url) {
-            if (mm7.dmodule.defaults.sendModuleId) {
-                var str = mm7.dmodule.defaults.callIdTag +"="+this.moduleId;
-                if ( mm7.dmodule.defaults.sendRandomId ) {
+            if (mm7.content.defaults.sendModuleId) {
+                var str = mm7.content.defaults.callIdTag +"="+this.contentId;
+                if ( mm7.content.defaults.sendRandomId ) {
                     str +="_"+randomId();
                 }
                 return mm7.url.add(url,str);
@@ -1822,7 +1822,7 @@ t.start();
         this.next = function (i, callback) {
             if (i > this.list.length - 1) {
                 if (typeof callback)
-                    callback(this.moduleId);
+                    callback(this.contentId);
             } else {
                 var type = this.list[i].type;
                 if (type === "js") {
@@ -1845,7 +1845,7 @@ t.start();
                 link.setAttribute("type", "text/css");
                 link.setAttribute("href", this.updateUrl(this.list[i].src));
                 document.getElementsByTagName("head")[0].appendChild(link);
-                mm7.dmodule.modules[ this.moduleId ].parts.push({type: "css", element: link});                
+                mm7.content.contents[ this.contentId ].parts.push({type: "css", element: link});                
             }
             this.next(i + 1, callback);
         };
@@ -1860,13 +1860,13 @@ t.start();
                 script.onerror = function () {
                     mm7.error("Dynamic script loading error (" + this.src + ")");
                     if (typeof self.onerror === "function")
-                        onerror(self.moduleId,this.src);
+                        onerror(self.contentId,this.src);
                 };
                 script.onload = function () {
                     self.next(i + 1, callback);
                 };
                 document.getElementsByTagName("head")[0].appendChild(script);
-                mm7.dmodule.modules[ self.moduleId ].parts.push({type: "css", element: script});
+                mm7.content.contents[ self.contentId ].parts.push({type: "css", element: script});
             } else {
                 this.next(i + 1, callback);
             }
@@ -1878,7 +1878,7 @@ t.start();
             obj.responseDataType = "text";
             mm7.http.request(this.updateUrl(this.list[i].url), this.list[i].data, function (response) {                
                 self.list[i].element.innerHTML = response;
-                mm7.dmodule.modules[self.moduleId].parts.push({ type:"html",element:self.list[i].element });
+                mm7.content.contents[self.contentId].parts.push({ type:"html",element:self.list[i].element });
                 self.next(i+1,callback);
             },obj);
         };
@@ -1888,32 +1888,32 @@ t.start();
             var obj = mm7.extend(mm7.http.defaults,this.list[i].options);
             obj.responseDataType = "json";
             mm7.http.request(this.updateUrl(this.list[i].url), this.list[i].data, function (response) {                
-                mm7.dmodule.modules[ self.moduleId ].data[ self.list[i].name ] = response;
+                mm7.content.contents[ self.contentId ].data[ self.list[i].name ] = response;
                 self.next(i+1,callback);
             },obj);
         };
 
         this.load = function (callback) {
             this.next(0,callback);
-            return this.moduleId;
+            return this.contentId;
         };
 
     };
 
-    mm7["dmodule"] = {
+    mm7["content"] = {
 
         defaults: {
-            callIdTag: "dmodule",
+            callIdTag: "content",
             sendRandomId:true,
             sendModuleId:true
         },       
 
-        modules: {},
+        contents: {},
 
         remove: function (mdl) {
-            if (!this.modules.hasOwnProperty(mdl))
+            if (!this.contents.hasOwnProperty(mdl))
                 return false;
-            var m = this.modules[mdl];
+            var m = this.contents[mdl];
             var head = document.getElementsByTagName('head')[0];
             for (var i = m.parts.length - 1; i > -1; i--) {
                 if ( m.parts[i].type === "css" ) {
@@ -1925,35 +1925,35 @@ t.start();
                 }
             }
 
-            delete this.modules[mdl];
+            delete this.contents[mdl];
 
             return true;
 
         },
 
         clear: function () {
-            for (var k in this.modules) {
+            for (var k in this.contents) {
                 this.remove(k);
             }
         },
         
         data:function(mdl) {
-            return modules[mdl].data;
+            return contents[mdl].data;
         },
         
         exist:function(name) {
-            return this.modules.hasOwnProperty(name);
+            return this.contents.hasOwnProperty(name);
         },
         
-        module:function(name) {
-            return modules[name];
+        get:function(name) {
+            return contents[name];
         },
 
         "new": function (name) {
             var mid;
             if ( !name ) {
                 mid = "mdl" + randomId();
-                while (this.modules.hasOwnProperty(mid)) {
+                while (this.contents.hasOwnProperty(mid)) {
                     mid = "mdl" + randomId();
                 }
             } else {
@@ -1961,13 +1961,13 @@ t.start();
                 this.remove(mid);
             }           
             
-            this.modules[mid] = {
+            this.contents[mid] = {
                 data: {},
                 parts: []
             };
 
             var m = new create();
-            m.moduleId = mid;
+            m.contentId = mid;
             return m;
         }
     };

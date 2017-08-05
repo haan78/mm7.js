@@ -26,6 +26,6 @@ cat ../src/mm7.browser.js >> ../dist/mm7.all.in.one.js
 cat ../src/mm7.tab.js >> ../dist/mm7.all.in.one.js
 cat ../src/mm7.roller.js >> ../dist/mm7.all.in.one.js
 cat ../src/mm7.math.js >> ../dist/mm7.all.in.one.js
-cat ../src/mm7.dmodule.js >> ../dist/mm7.all.in.one.js
+cat ../src/mm7.content.js >> ../dist/mm7.all.in.one.js
 
 java -jar yuicompressor-2.4.8.jar ../dist/mm7.all.in.one.js -o ../dist/mm7.all.in.one.min.js
