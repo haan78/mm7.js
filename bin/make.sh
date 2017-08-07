@@ -7,6 +7,7 @@ echo "/* BUILD $timestamp" > ../dist/mm7.all.in.one.js
 echo "MM7 Java Script Part */" >> ./dist/mm7.all.in.one.js
 
 cat ../src/mm7.js >> ../dist/mm7.all.in.one.js
+cat ../src/mm7.array.js >> ../dist/mm7.all.in.one.js
 cat ../src/mm7.document.js >> ../dist/mm7.all.in.one.js
 cat ../src/mm7.url.js >> ../dist/mm7.all.in.one.js
 cat ../src/mm7.json.js >> ../dist/mm7.all.in.one.js
@@ -21,7 +22,6 @@ cat ../src/mm7.base64.js >> ../dist/mm7.all.in.one.js
 cat ../src/mm7.paging.js >> ../dist/mm7.all.in.one.js
 cat ../src/mm7.string.js >> ../dist/mm7.all.in.one.js
 cat ../src/mm7.navigator.js >> ../dist/mm7.all.in.one.js
-cat ../src/mm7.array.js >> ../dist/mm7.all.in.one.js
 cat ../src/mm7.browser.js >> ../dist/mm7.all.in.one.js
 cat ../src/mm7.tab.js >> ../dist/mm7.all.in.one.js
 cat ../src/mm7.roller.js >> ../dist/mm7.all.in.one.js
