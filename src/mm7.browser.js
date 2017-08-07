@@ -12,7 +12,7 @@
             return Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
         },
         isChrome: function() {
-            return !!window.chrome && !isOpera;
+            return !!window.chrome && !this.isOpera();
         },
         isIE : function() {
             return false || !!document.documentMode; // At least IE6

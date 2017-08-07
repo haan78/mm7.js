@@ -2,11 +2,16 @@ var mm7 = {
     lastError: "",
     logError: true,
     error: function(message, handler) {
-        this.lastError = message;
-        if (this.logError)
-            console.log(this.lastError);
+        this.lastError = message;        
         if (typeof handler === "function")
             handler(this.lastError);
+        if (this.logError) {
+            console.log(this.lastError);
+        } else {
+            var er =new Error(this.lastError);
+            er.name = "mm7Error";
+            throw er;
+        }            
     },
     missing: function(modules, doError) { //dependency
         for (var i = 0; i < modules.length; i++) {
