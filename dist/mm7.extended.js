@@ -1,4 +1,4 @@
-/* BUILD Pzt 07.08.2017@10-21-13,12 */  
+/* BUILD Sal 08.08.2017@ 9-45-54,44 */  
 var mm7 = {
     lastError: "",
     logError: true,
@@ -1035,148 +1035,6 @@ t.start();
 //var Timer = 
 
 
-
-(function(mm7) {
-    /**
-     *
-     *  Base64 encode / decode
-     *  http://www.webtoolkit.info/
-     *
-     **/
-    mm7["base64"] = {
-        // private property
-        _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
-        // public method for encoding
-        encode: function(input) {
-            var output = "";
-            var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
-            var i = 0;
-
-            input = mm7.base64._utf8_encode(input);
-
-            while (i < input.length) {
-
-                chr1 = input.charCodeAt(i++);
-                chr2 = input.charCodeAt(i++);
-                chr3 = input.charCodeAt(i++);
-
-                enc1 = chr1 >> 2;
-                enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
-                enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
-                enc4 = chr3 & 63;
-
-                if (isNaN(chr2)) {
-                    enc3 = enc4 = 64;
-                } else if (isNaN(chr3)) {
-                    enc4 = 64;
-                }
-
-                output = output +
-                        this._keyStr.charAt(enc1) + this._keyStr.charAt(enc2) +
-                        this._keyStr.charAt(enc3) + this._keyStr.charAt(enc4);
-
-            }
-
-            return output;
-        },
-        // public method for decoding
-        decode: function(input) {
-            var output = "";
-            var chr1, chr2, chr3;
-            var enc1, enc2, enc3, enc4;
-            var i = 0;
-
-            input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
-
-            while (i < input.length) {
-
-                enc1 = this._keyStr.indexOf(input.charAt(i++));
-                enc2 = this._keyStr.indexOf(input.charAt(i++));
-                enc3 = this._keyStr.indexOf(input.charAt(i++));
-                enc4 = this._keyStr.indexOf(input.charAt(i++));
-
-                chr1 = (enc1 << 2) | (enc2 >> 4);
-                chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
-                chr3 = ((enc3 & 3) << 6) | enc4;
-
-                output = output + String.fromCharCode(chr1);
-
-                if (enc3 !== 64) {
-                    output = output + String.fromCharCode(chr2);
-                }
-                if (enc4 !== 64) {
-                    output = output + String.fromCharCode(chr3);
-                }
-
-            }
-
-            output = mm7.base64._utf8_decode(output);
-
-            return output;
-
-        },
-        // private method for UTF-8 encoding
-        _utf8_encode: function(string) {
-            string = string.replace(/\r\n/g, "\n");
-            var utftext = "";
-
-            for (var n = 0; n < string.length; n++) {
-
-                var c = string.charCodeAt(n);
-
-                if (c < 128) {
-                    utftext += String.fromCharCode(c);
-                }
-                else if ((c > 127) && (c < 2048)) {
-                    utftext += String.fromCharCode((c >> 6) | 192);
-                    utftext += String.fromCharCode((c & 63) | 128);
-                }
-                else {
-                    utftext += String.fromCharCode((c >> 12) | 224);
-                    utftext += String.fromCharCode(((c >> 6) & 63) | 128);
-                    utftext += String.fromCharCode((c & 63) | 128);
-                }
-
-            }
-
-            return utftext;
-        },
-        // private method for UTF-8 decoding
-        _utf8_decode: function(utftext) {
-            var string = "";
-            var i = 0;
-            var c = c1 = c2 = 0;
-
-            while (i < utftext.length) {
-
-                c = utftext.charCodeAt(i);
-
-                if (c < 128) {
-                    string += String.fromCharCode(c);
-                    i++;
-                }
-                else if ((c > 191) && (c < 224)) {
-                    c2 = utftext.charCodeAt(i + 1);
-                    string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
-                    i += 2;
-                }
-                else {
-                    c2 = utftext.charCodeAt(i + 1);
-                    c3 = utftext.charCodeAt(i + 2);
-                    string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
-                    i += 3;
-                }
-
-            }
-
-            return string;
-        }
-
-    };
-
-
-})(mm7);
-
 (function(mm7) {
     mm7["string"] = {
         toInt: function(stNum, def) {
@@ -1656,4 +1514,324 @@ t.start();
         }
     };
 })(mm7);
+
+(function(mm7) {
+    
+    mm7["paging"] = function(limit) {
+        var p = {
+            p_start:0,
+            p_limit:0,
+            p_total:0,
+            total:function(value) {
+                if (value) this.p_total = value; else return this.p_total;
+            },
+            limit:function(value) {
+                if (value) this.p_limit = value; else return this.p_limit;
+            },
+            start:function(value) {
+                if (value) this.p_start = value; else return this.p_start;
+            },
+            next:function() {
+                this.p_start = this.p_start + this.p_limit;
+                if (this.p_start > this.p_total - this.p_limit)
+                    this.p_start = this.p_total - this.p_limit;
+                return this.p_start;
+            },
+            previous:function() {
+                this.p_start = this.p_start - this.p_limit;
+                if (this.p_start < 0) this.p_start = 0;
+                return this.p_start;
+            },
+            first: function() { //public
+                this.p_start = 0;
+                return this.p_start;
+            },
+            last: function(name) { //public            
+                this.p_start = this.p_total - this.p_limit;
+                return this.p_start;
+            },
+            page: function(num) { //public    
+                if (num) {
+                    this.p_start = parseInt((num - 1) * this.p_limit);
+                    if (this.p_start > this.p_total - this.p_limit)
+                        this.p_start = this.p_total - this.p_limit;
+                    else if (this.p_start < 0) this.p_start = 0;
+                    
+                    return this.p_start;
+                } else {
+                    var pn = parseInt(this.p_start / this.p_limit);
+                    if (this.p_start % this.p_limit > 0) pn++;
+                    pn++;
+                    return pn;
+                }                
+            },
+            count:function() { //public
+                var pc = parseInt(this.p_total / this.p_limit);
+                if (this.p_total % this.p_limit > 0)
+                pc++;
+                return pc;
+            }
+        };
+        p.p_limit = 10;
+        if (limit) p.p_limit = limit;
+        return p;
+    };   
+
+})(mm7);
+
+(function(mm7) {
+    if (mm7.missing(["document"],true)>-1) return;
+    mm7["tab"] = function(list,selected) {
+        var control = {
+            "list":new Array(),
+            "selected":-1,
+            show:function(elm) {
+                //Can be overide for jQuery or another tools..
+                elm.style.display="block";
+            },
+            hide:function(elm) {
+                //Can be overide for jQuery or another tools..
+                elm.style.display="none";
+            },
+            onBeforeSet : null,
+            onAfterSet : null,            
+            "set":function(sel,selector) {
+                if ( mm7.type(this.onBeforeSet)==="function" ) {
+                    if ( ! this.onBeforeSet(sel,selector) ) return;
+                }
+                this.selected = sel;
+                for (var i=0; i<this.list.length; i++) {
+                    if ( (i===this.selected) || (this.list[i].id === this.selected ) ) {
+                        this.show(this.list[i]);
+                    } else {
+                        this.hide(this.list[i]);                        
+                    }                    
+                }
+                if ( mm7.type(this.onAfterSet)==="function" ) {
+                    this.onAfterSet(sel,selector);
+                }
+                
+                
+            },
+            "add":function(tab) {
+                if ( tab.length ) {
+                    for (var i=0; i < tab.length; i++) {
+                        if ( mm7.document.isDom(tab[i]) ) this.list.push(tab[i]);                        
+                    }
+                } else {
+                    if ( mm7.document.isDom(tab)  ) this.list.push(tab);
+                }
+            }
+        };
+        control.add(list);
+        if (selected) control.selected = selected;
+        control.set(selected);
+        return control;
+    };
+})(mm7);
+/*
+ * Default settings
+ * {        
+        fullscreen:false,
+        menubar:false,
+        status:false,
+        titlebar:false,
+        toolbar:false,
+        top:-1, // -1 means center of document
+        left:-1, //-1 means center of document
+        width:400,
+        height:400,            
+        onClosing:null, //parameter type function (event) {...}
+        onClosed:null, //parameter type function (event) {...}
+        onLoad:null, //parameter type function (event) {...}
+        onCallback:null // Callback function will inject into child. From child document callback function can be called like this ( window.colback(...); )
+    }
+ */
+
+(function (mm7) {
+    mm7["window"] = {
+        "defaults": {        
+            fullscreen:false,
+            menubar:false,
+            status:false,
+            titlebar:false,
+            toolbar:false,
+            top:-1,
+            left:-1,
+            width:400,
+            height:400,            
+            onClosing:null,
+            onClosed:null,
+            onLoad:null,
+            onCallback:null
+        },
+        
+        "open":function(name,url,options) {
+            function winSettings(obj) {
+                var str = "";
+                if ( obj.fullscreen ) str+=",fullscreen=1"; else str+=",fullscreen=0";
+                if ( obj.menubar ) str+=",menubar=1"; else str+=",menubar=0";
+                if ( obj.status ) str+=",status=1"; else str+=",status=0";
+                if ( obj.titlebar ) str+=",titlebar=1"; else str+=",titlebar=0";
+                if ( obj.toolbar ) str+=",toolbar=1"; else str+=",toolbar=0";
+        
+                str+=",width="+obj.width;
+                str+=",height="+obj.height;
+        
+                if ( obj.left === -1 ) {
+                    var v = Math.floor( ($( document ).width() - obj.width) / 2 );
+                    str+=",left="+v;
+                } else {
+                    str+=",left="+obj.left;
+                }
+        
+                if ( obj.top === -1 ) {
+                    var v = Math.floor( ($( document ).height() - obj.height) / 2 );
+                    str+=",top="+v;
+                } else {
+                    str+=",top="+obj.top;
+                }        
+                return str.length > 0 ? str.substr(1) : "" ;
+            }
+            
+            function create(name,url,obj) {
+                var settings = winSettings(obj);
+                var win = window.open(url,name,settings);
+                if ( typeof obj.onCallback === "function" ) {
+                    win.window["callback"] = obj.onCallback;
+                }
+        
+                win.window.addEventListener("load",function(evt){                
+                    if ( typeof obj.onClosing === "function" ) {
+                        win.window.addEventListener("beforeunload",obj.onClosing,false);                    
+                    }
+                    
+                    if ( typeof obj.onClosed === "function" ) {
+                        win.window.addEventListener("unload",obj.onClosed,false);                    
+                    }
+                    
+                    if ( typeof obj.onLoad === "function" ) {
+                        obj.onLoad(evt);
+                    }                    
+                });
+                
+                return win;
+            }
+            mm7.window.list[name] = create(name,url,options);
+        },
+        "close":function(name) {
+            if ( this.list[name] ) {
+                this.list[name].window.close();
+                delete this.list[name];
+            }
+        },
+        "list":{}
+    };
+})(mm7);
+
+
+
+(function (mm7) {
+
+    if (mm7.missing(["document"], true) > -1)
+        return;
+
+    function _roller(holder, obj) {
+
+        var limit = 5;
+        var interval = 1000;
+        var vector = "+";
+        //var holder = null;
+        var auto = true;
+
+        var list = new Array();
+        var run = false;
+        var index = limit;
+
+        function removeAndAdd() {
+            if (vector === "+") {
+                holder.removeChild(holder.children[0]);
+                holder.appendChild(list[index]);
+                index++;
+                if (index > list.length - 1)
+                    index = 0;
+            } else if (vector === "-") {
+                holder.removeChild(holder.children[ holder.children.length - 1 ]);
+                holder.insertBefore(list[index], holder.children[0]);
+                index--;
+                if (index < 0)
+                    index = list.length - 1;
+            }
+        }
+
+        function acction() {
+            removeAndAdd();
+            if (run)
+                setTimeout(acction, interval);
+        }
+
+        this.start = function () {
+            if (list.length <= limit)
+                return false;
+            if (run)
+                return false;
+            run = true;
+            setTimeout(acction, interval);
+            return true;
+        };
+
+        this.stop = function () {
+            run = false;
+        };
+
+        this.isRunning = function () {
+            return run;
+        };
+
+        this.setInterval = function (value) {
+            interval = value;
+        };
+
+        this.getInterval = function () {
+            return interval;
+        };
+
+        this.setVector = function (value) {
+            vector = value;
+        };
+
+        this.getVector = function () {
+            return vector;
+        };
+
+        function init(obj) {
+            if (typeof obj === "object") {
+                if (typeof obj["auto"] !== "undefined")
+                    auto = obj["auto"];
+                if (typeof obj["limit"] !== "undefined") {
+                    limit = obj["limit"];
+                    index = limit;
+                }
+                if (typeof obj["interval"] !== "undefined")
+                    interval = obj["interval"];
+                if (typeof obj["vector"] !== "undefined")
+                    vector = obj["vector"];
+            }
+
+            for (var i = 0; i < holder.children.length; i++) {
+                list.push(holder.children[i]);
+            }
+            for (i = limit; i < list.length; i++) {
+                holder.removeChild(list[i]);
+            }
+        }
+        init(obj);
+        if ((auto === true) && (holder !== null))
+            this.start();
+    }
+    mm7["roller"] = function (holder, obj) {
+        return new _roller(mm7.document.node(holder), obj);
+    };
+})(mm7);
+
 

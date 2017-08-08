@@ -37,17 +37,18 @@ git clone https://github.com/haan78/%1.git %target%
 
 
 rem remove unnecessary parts of libary
-if exist %target%/.git (
-	rmdir /s /q "%target%/.git"
-)
 
-if exist "%target%/nbproject" (
-	rmdir /s /q "%target%/nbproject"
-)
+rem if exist %target%/.git (
+rem	rmdir /s /q "%target%/.git"
+rem )
 
-if exist "%target%/.gitignore" (
-	del /f /q "%target%\\.gitignore"
-)
+rem if exist "%target%/nbproject" (
+rem 	rmdir /s /q "%target%/nbproject"
+rem )
+
+rem if exist "%target%/.gitignore" (
+rem	del /f /q "%target%\\.gitignore"
+rem )
 goto :eof
 
 :err1
