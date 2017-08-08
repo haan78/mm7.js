@@ -60,7 +60,7 @@ echo %settings% file hasn't been found
 goto :eof
 
 :help
-echo Usage is...
-echo To put mm7 libary into current folder: mm7
-echo To put mm7 libary into specific folder: mm7 [folder name]
-echo To show this help : mm7 -h
+echo Usage of mm7 git is...
+echo To put mm7 libary into current folder: git
+echo To put mm7 libary into specific folder: git [folder name]
+echo To show this help : git -h
