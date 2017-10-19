@@ -40,9 +40,9 @@
                     if (obj[k] !== null)
                         v = this.toString(obj[k]);
                     else
-                        v = "\"\"";
+                        v = "null";
                 else
-                    v = '"' + obj[k] + '"';
+                    v = typeof obj[k] === "string" ? '"' + obj[k] + '"' : obj[k];
                 if (isArray)
                     s += v;
                 else
