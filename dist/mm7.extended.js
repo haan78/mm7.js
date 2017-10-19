@@ -1,4 +1,4 @@
-/* BUILD Sal 08.08.2017@ 9-45-54,44 */  
+/* BUILD Per 19.10.2017@15-23-13,16 */  
 var mm7 = {
     lastError: "",
     logError: true,
@@ -330,9 +330,9 @@ var mm7 = {
                     if (obj[k] !== null)
                         v = this.toString(obj[k]);
                     else
-                        v = "\"\"";
+                        v = "null";
                 else
-                    v = '"' + obj[k] + '"';
+                    v = typeof obj[k] === "string" ? '"' + obj[k] + '"' : obj[k];
                 if (isArray)
                     s += v;
                 else
