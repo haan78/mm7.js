@@ -20,7 +20,7 @@
             if (match) return dontdecode ? match[1] : decodeURIComponent(match[1].replace(/\+/g, '%20')); else return null;
         },
         remove:function(name){
-            document.cookie = name+'=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+            document.cookie = name+'=; Max-Age=0;';
         }
     };
 })(mm7);
