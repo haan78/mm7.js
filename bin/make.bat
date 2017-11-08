@@ -25,6 +25,7 @@ type ..\src\mm7.navigator.js >> ..\dist\mm7.standart.js
 type ..\src\mm7.browser.js >> ..\dist\mm7.standart.js
 type ..\src\mm7.math.js >> ..\dist\mm7.standart.js
 type ..\src\mm7.content.js >> ..\dist\mm7.standart.js
+type ..\src\mm7.cookie.js >> ..\dist\mm7.standart.js
 
 type ..\dist\mm7.standart.js > ..\dist\mm7.extended.js
 type ..\src\extra\mm7.paging.js >> ..\dist\mm7.extended.js
