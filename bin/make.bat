@@ -19,7 +19,7 @@ type ..\src\mm7.element.js >> ..\dist\mm7.standart.js
 type ..\src\mm7.object.js >> ..\dist\mm7.standart.js
 type ..\src\mm7.date.js >> ..\dist\mm7.standart.js
 type ..\src\mm7.timer.js >> ..\dist\mm7.standart.js
-type ..\src\mm7.standart64.js >> ..\dist\mm7.standart.js
+type ..\src\mm7.base64.js >> ..\dist\mm7.standart.js
 type ..\src\mm7.string.js >> ..\dist\mm7.standart.js
 type ..\src\mm7.navigator.js >> ..\dist\mm7.standart.js
 type ..\src\mm7.browser.js >> ..\dist\mm7.standart.js

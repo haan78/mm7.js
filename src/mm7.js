@@ -56,7 +56,7 @@ var mm7 = {
         if (data instanceof Object) {
                 return "object";
         } else
-            typeof data;
+            return typeof data;
     },
     count:function(obj) {
         if ( this.type(obj)==="array" ) return obj.length;
