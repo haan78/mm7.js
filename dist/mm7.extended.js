@@ -1,4 +1,4 @@
-/* BUILD Sal 12.12.2017@17-35-42,57 */  
+/* BUILD Per 14.12.2017@15-17-01,32 */  
 var mm7 = {
     lastError: "",
     logError: true,
@@ -680,7 +680,8 @@ var mm7 = {
                             "key": k,
                             "level": prm.level + 1,
                             "index": i,
-                            "neighbor_count":nCount
+                            "member_count":nCount,
+                            "isLast": i === nCount-1
                         };
                         this.doEach(p, handle);
                         i++;
@@ -696,7 +697,8 @@ var mm7 = {
                     "key": "",
                     "level": 0,
                     "index": -1,
-                    "neighbor_count":0
+                    "member_count":1,
+                    "isLast":true
                 };
                 this.doEach(prm, handle);
             },

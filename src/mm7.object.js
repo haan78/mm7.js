@@ -14,7 +14,8 @@
                             "key": k,
                             "level": prm.level + 1,
                             "index": i,
-                            "neighbor_count":nCount
+                            "member_count":nCount,
+                            "isLast": i === nCount-1
                         };
                         this.doEach(p, handle);
                         i++;
@@ -30,7 +31,8 @@
                     "key": "",
                     "level": 0,
                     "index": -1,
-                    "neighbor_count":0
+                    "member_count":1,
+                    "isLast":true
                 };
                 this.doEach(prm, handle);
             },
