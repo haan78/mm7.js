@@ -1,12 +1,22 @@
 (function(mm7) {
     mm7["url"] = {
-        getParam: function() {
+        getQueryParams: function() {
             var vars = {};
             window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m, key, value) {
                 vars[key] = value.replace(/#/g, '');
             });
             return vars;
         },
+        
+        getParam:function(name) {
+            var pl = this.getQueryParams();
+            if ( pl.hasOwnProperty(name) ) {
+                return pl[name];
+            } else {
+                return null;
+            }
+        },
+        
         extract:function(url){
             var str = new String(url);
             var vars = {};

@@ -1,4 +1,4 @@
-/* BUILD Per 14.12.2017@15-17-01,32 */  
+/* BUILD Sal 26.12.2017@10-41-21,58 */  
 var mm7 = {
     lastError: "",
     logError: true,
@@ -233,13 +233,23 @@ var mm7 = {
     };
 })(mm7);(function(mm7) {
     mm7["url"] = {
-        getParam: function() {
+        getQueryParams: function() {
             var vars = {};
             window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m, key, value) {
                 vars[key] = value.replace(/#/g, '');
             });
             return vars;
         },
+        
+        getParam:function(name) {
+            var pl = this.getQueryParams();
+            if ( pl.hasOwnProperty(name) ) {
+                return pl[name];
+            } else {
+                return null;
+            }
+        },
+        
         extract:function(url){
             var str = new String(url);
             var vars = {};
@@ -797,6 +807,53 @@ var mm7 = {
         obj["dayName"] = this.daysOfWeek[d.getDay()];
         obj["monthName"] = this.monthsOfYear[d.getMonth()];
         return obj;
+    },
+    
+    diff:function(d1,d2,interval) { //interval = (second,minute,day,week,mounth,year)
+        var result = d2 - d1;
+            switch (interval) {
+                case "year":
+                    var ynew = d2.getFullYear();
+                    var mnew = d2.getMonth();
+                    var dnew = d2.getDate();
+                    var yold = d1.getFullYear();
+                    var mold = d1.getMonth();
+                    var dold = d1.getDate();
+                    var diff = ynew - yold;
+                    if (mold > mnew) diff--;
+                    else {
+                        if (mold == mnew) {
+                            if (dold > dnew) diff--;
+                        }
+                    }
+                    return diff;
+                case "mounth":
+                    var months;
+                    months = (d2.getFullYear() - d1.getFullYear()) * 12;
+                    months -= d1.getMonth() + 1;
+                    months += d2.getMonth();
+                    return months <= 0 ? 0 : months;
+                    break;
+                case "week":
+                    return result / (1000 * 60 * 60 * 24 * 7);
+                    break;
+                case "day":
+                    return result / (1000 * 60 * 60 * 24);
+                    break;
+                case "hour":
+                    return result / (1000 * 60 * 60);
+                    break;
+                case "minute":
+                    return result / (1000 * 60);
+                    break;
+                case "second":
+                    return result / (1000);
+                    break;
+                default:
+                    return result; //
+                    break;;
+            }
+        
     },
     isNumberCode: function(code) {
         if ((code > 47) && (code < 58))
