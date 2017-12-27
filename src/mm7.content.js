@@ -79,7 +79,7 @@
 
         this.next = function (i, callback) {
             if (i > this.list.length - 1) {
-                if (typeof callback)
+                if (typeof callback==="function")
                     callback(this.contentId);
             } else {
                 var type = this.list[i].type;

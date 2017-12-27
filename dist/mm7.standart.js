@@ -1,4 +1,4 @@
-/* BUILD Sal 26.12.2017@10-41-21,58 */  
+/* BUILD €ar 27.12.2017@ 9-48-47,61 */  
 var mm7 = {
     lastError: "",
     logError: true,
@@ -1564,7 +1564,7 @@ t.start();
 
         this.next = function (i, callback) {
             if (i > this.list.length - 1) {
-                if (typeof callback)
+                if (typeof callback==="function")
                     callback(this.contentId);
             } else {
                 var type = this.list[i].type;
