@@ -1,4 +1,4 @@
-/* BUILD Cum 02.03.2018@15-44-20,59 */  
+/* BUILD Cum 02.03.2018@16-27-19,02 */  
 var mm7 = {
     lastError: "",
     logError: true,
@@ -1322,7 +1322,7 @@ t.start();
             var ua = navigator.userAgent, tem, M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
             if (/trident/i.test(M[1])) {
                 tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
-                return {name: 'IE ', version: (tem[1] || '')};
+                return {name: 'IE', version: (tem[1] || '')};
             }
             if (M[1] === 'Chrome') {
                 tem = ua.match(/\bOPR\/(\d+)/)

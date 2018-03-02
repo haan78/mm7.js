@@ -4,7 +4,7 @@
             var ua = navigator.userAgent, tem, M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
             if (/trident/i.test(M[1])) {
                 tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
-                return {name: 'IE ', version: (tem[1] || '')};
+                return {name: 'IE', version: (tem[1] || '')};
             }
             if (M[1] === 'Chrome') {
                 tem = ua.match(/\bOPR\/(\d+)/)
