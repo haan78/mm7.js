@@ -5,7 +5,7 @@
         defaults: {
             requestDataType: "json", // [json,query]
             responseDataType: "json", // [json,text]
-            method: "POST", // [POST,GET]
+            method: "POST", // [POST,GET,PUT,DELETE]
             charset: "UTF-8"
         },
         createHTTPRequest: function () {
@@ -59,8 +59,8 @@
                 }
             };           
 
-            if (sett.method === "POST") {
-                http.open("POST", url, true);
+            if (sett.method === "POST" || sett.method === "PUT") {
+                http.open(sett.method, url, true);
                 if ( sett.responseDataType === "json" ) {
                     http.setRequestHeader("Content-type", "application/json;charset=" + sett.charset);
                 } else {
@@ -68,8 +68,8 @@
                 }
                 //http.setRequestHeader("Content-length", requestStr.length);
                 http.send(requestStr);
-            } else {
-                http.open("GET", mm7.url.add(url, requestStr), true);
+            } else { //GET or DELETE
+                http.open(sett.method, mm7.url.add(url, requestStr), true);
                 http.send();
             }
         }
