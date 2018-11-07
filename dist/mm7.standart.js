@@ -1,4 +1,4 @@
-/* BUILD €ar 20.06.2018@ 9-56-50,96 */  
+/* BUILD €ar 07.11.2018@17-45-25,43 */  
 var mm7 = {
     lastError: "",
     logError: true,
@@ -1266,6 +1266,10 @@ t.start();
         },
         isInteger: function(n) {
             return n === +n && n === (n | 0);
+        },
+        isEmail:function(str){
+            var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(String(str).toLowerCase());
         },
         floatFormat:function(n,c,d,t){
             if ( !this.isFloat(n) ) return "";
