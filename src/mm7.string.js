@@ -29,6 +29,10 @@
         isInteger: function(n) {
             return n === +n && n === (n | 0);
         },
+        isEmail:function(str){
+            var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(String(str).toLowerCase());
+        },
         floatFormat:function(n,c,d,t){
             if ( !this.isFloat(n) ) return "";
             c = isNaN(c = Math.abs(c)) ? 2 : c;
