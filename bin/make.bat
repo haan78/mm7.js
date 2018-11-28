@@ -14,6 +14,7 @@ type ..\src\mm7.url.js >> ..\dist\mm7.standart.js
 type ..\src\mm7.json.js >> ..\dist\mm7.standart.js
 type ..\src\mm7.jsonp.js >> ..\dist\mm7.standart.js
 type ..\src\mm7.http.js >> ..\dist\mm7.standart.js
+type ..\src\mm7.ajax.js >> ..\dist\mm7.standart.js
 type ..\src\mm7.form.js >> ..\dist\mm7.standart.js
 type ..\src\mm7.element.js >> ..\dist\mm7.standart.js
 type ..\src\mm7.object.js >> ..\dist\mm7.standart.js

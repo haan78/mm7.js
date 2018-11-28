@@ -1,6 +1,7 @@
 var mm7 = {
     lastError: "",
     logError: true,
+    defaults:{},
     error: function(message, handler) {
         this.lastError = message;        
         if (typeof handler === "function")
