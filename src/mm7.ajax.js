@@ -1,8 +1,7 @@
 (function (mm7) {
     if (mm7.missing(["url", "json"], true) > -1)
         return;
-
-
+    
     function ajaxCreateHTTPRequest(ajax) {
         //Building HTTP Request
         var HTTP = null;
@@ -41,7 +40,6 @@
                 ajax.settings.after();
             }
         };
-
         return HTTP;
     }
 
@@ -121,6 +119,5 @@
                 return this;
             }
         };
-
     };
 })(mm7);
