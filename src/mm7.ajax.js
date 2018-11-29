@@ -29,7 +29,7 @@
         HTTP.onreadystatechange = function () {
             if (this.readyState === 4) {
                 var response;
-                if (ajax.settings.responseType === "JSON") {
+                if (ajax.settings.jsonResponse === true) {
                     response = mm7.json.toObject(this.responseText);
                 } else {
                     response = this.responseText;
@@ -42,8 +42,8 @@
     }
 
     mm7.defaults["ajax"] = {
-        requestType: "JSON", // [json,query]
-        responseType: "JSON", // [json,text]
+        jsonResponse:true,
+        jsonRequest:true,
         method: "POST", // [POST,GET,PUT,DELETE]
         charset: "UTF-8",
         data: null,
@@ -87,7 +87,7 @@
                 }
                 var requestStr = "";
                 if ((typeof this.settings.data !== "undefined") && (this.settings.data !== null) && (typeof this.settings.data === "object")) {
-                    if (this.settings.requestType === "JSON") {
+                    if (this.settings.jsonRequest === true) {
                         requestStr = mm7.json.toString(mm7.json.fixAll(this.settings.data));
                     } else {
                         requestStr = encodeURI(mm7.url.toQuery(this.settings.data));
@@ -101,7 +101,7 @@
 
                 if (this.settings.method === "POST" || this.settings.method === "PUT") {
                     http.open(this.settings.method, url, true);
-                    if (this.settings.responseType === "JSON") {
+                    if (this.settings.jsonResponse === true) {
                         http.setRequestHeader("Content-type", "application/json;charset=" + this.settings.charset);
                     } else {
                         http.setRequestHeader("Content-type", "application/x-www-form-urlencoded;charset=" + this.settings.charset);
