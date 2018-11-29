@@ -1,4 +1,4 @@
-/* BUILD €ar 28.11.2018@17-32-51,34 */  
+/* BUILD Per 29.11.2018@ 8-39-56,25 */  
 var mm7 = {
     lastError: "",
     logError: true,
@@ -493,8 +493,7 @@ var mm7 = {
 (function (mm7) {
     if (mm7.missing(["url", "json"], true) > -1)
         return;
-
-
+    
     function ajaxCreateHTTPRequest(ajax) {
         //Building HTTP Request
         var HTTP = null;
@@ -509,7 +508,6 @@ var mm7 = {
                     HTTP = new ActiveXObject("Microsoft.XMLHTTP");
                 } catch (ex) {
                     ajax.settings.error(ex);
-                    ajax.settings.after();
                     return null;
                 } //catch sub
             } //catch first
@@ -517,7 +515,6 @@ var mm7 = {
             var ex = new Error("HTTPRequest is not supported by engine");
             ex.name = "mm7 ajax error";
             ajax.settings.error(ex);
-            ajax.settings.after();
             return null;
         }
 
@@ -528,12 +525,11 @@ var mm7 = {
                     response = mm7.json.toObject(this.responseText);
                 } else {
                     response = this.responseText;
-                }
-                ajax.settings.success(response);
+                }                
                 ajax.settings.after();
+                ajax.settings.success(response);
             }
         };
-
         return HTTP;
     }
 
@@ -613,7 +609,6 @@ var mm7 = {
                 return this;
             }
         };
-
     };
 })(mm7);
 (function (mm7) {

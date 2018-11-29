@@ -16,7 +16,6 @@
                     HTTP = new ActiveXObject("Microsoft.XMLHTTP");
                 } catch (ex) {
                     ajax.settings.error(ex);
-                    ajax.settings.after();
                     return null;
                 } //catch sub
             } //catch first
@@ -24,7 +23,6 @@
             var ex = new Error("HTTPRequest is not supported by engine");
             ex.name = "mm7 ajax error";
             ajax.settings.error(ex);
-            ajax.settings.after();
             return null;
         }
 
@@ -35,9 +33,9 @@
                     response = mm7.json.toObject(this.responseText);
                 } else {
                     response = this.responseText;
-                }
-                ajax.settings.success(response);
+                }                
                 ajax.settings.after();
+                ajax.settings.success(response);
             }
         };
         return HTTP;
