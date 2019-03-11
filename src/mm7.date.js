@@ -158,6 +158,23 @@
     daysInMonth:function(date) {
         return new Date(date.getYear(),date.getMonth()+1,0).getDate();
     },
+    add:function(date,unit,num) {
+        var d = new Date(date);
+        if (unit==="day") {
+            d.setDate( d.getDate() + num );
+        } else if ( unit === "month" ) {
+            d.setMonth( d.getMonth() + num );
+        } else if ( unit === "year" ) {
+            d.setYear( d.getYear() + num );
+        } else if ( unit === "hour" ) {            
+            d.setHours( d.getHours() + num );
+        } else if ( unit === "minute" ) {            
+            d.setMinutes( d.getMinutes() + num );
+        } else if ( unit === "second" ) {
+            d.setSeconds( d.getSeconds() + num );
+        }
+        return d;
+    },
     toDate: function(str, format) {           
         var map = this.getParamMap(format);
         var elements = this.getDefaultElements();

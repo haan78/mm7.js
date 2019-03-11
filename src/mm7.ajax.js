@@ -81,9 +81,18 @@
                 }
                 return this;
             },
-            request: function (url) {
+            request: function (url,data,success,error) {
                 if (url) {
                     this.set("url", url);
+                }
+                if (data) {
+                    this.set("data", data);
+                }
+                if (success) {
+                    this.set("success", success);
+                }
+                if (error) {
+                    this.set("error", error);
                 }
                 var requestStr = "";
                 if ((typeof this.settings.data !== "undefined") && (this.settings.data !== null) && (typeof this.settings.data === "object")) {
@@ -100,7 +109,7 @@
                 }
 
                 if (this.settings.method === "POST" || this.settings.method === "PUT") {
-                    http.open(this.settings.method, url, true);
+                    http.open(this.settings.method, this.settings.url, true);
                     if (this.settings.jsonResponse === true) {
                         http.setRequestHeader("Content-type", "application/json;charset=" + this.settings.charset);
                     } else {
@@ -110,7 +119,7 @@
                     this.settings.before();
                     http.send(requestStr);
                 } else { //GET or DELETE
-                    http.open(this.settings.method, mm7.url.add(url, requestStr), true);
+                    http.open(this.settings.method, mm7.url.add(this.settings.url, requestStr), true);
                     this.settings.before();
                     http.send();
                 }

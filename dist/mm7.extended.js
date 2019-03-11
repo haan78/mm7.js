@@ -1,4 +1,4 @@
-/* BUILD Cum 21.12.2018@ 9-13-56,34 */  
+/* BUILD Sal 26.02.2019@13-15-35,45 */  
 var mm7 = {
     lastError: "",
     logError: true,
@@ -573,9 +573,18 @@ var mm7 = {
                 }
                 return this;
             },
-            request: function (url) {
+            request: function (url,data,success,error) {
                 if (url) {
                     this.set("url", url);
+                }
+                if (data) {
+                    this.set("data", data);
+                }
+                if (success) {
+                    this.set("success", success);
+                }
+                if (error) {
+                    this.set("error", error);
                 }
                 var requestStr = "";
                 if ((typeof this.settings.data !== "undefined") && (this.settings.data !== null) && (typeof this.settings.data === "object")) {
@@ -592,7 +601,7 @@ var mm7 = {
                 }
 
                 if (this.settings.method === "POST" || this.settings.method === "PUT") {
-                    http.open(this.settings.method, url, true);
+                    http.open(this.settings.method, this.settings.url, true);
                     if (this.settings.jsonResponse === true) {
                         http.setRequestHeader("Content-type", "application/json;charset=" + this.settings.charset);
                     } else {
@@ -602,7 +611,7 @@ var mm7 = {
                     this.settings.before();
                     http.send(requestStr);
                 } else { //GET or DELETE
-                    http.open(this.settings.method, mm7.url.add(url, requestStr), true);
+                    http.open(this.settings.method, mm7.url.add(this.settings.url, requestStr), true);
                     this.settings.before();
                     http.send();
                 }
@@ -1040,6 +1049,23 @@ var mm7 = {
     daysInMonth:function(date) {
         return new Date(date.getYear(),date.getMonth()+1,0).getDate();
     },
+    add:function(date,unit,num) {
+        var d = new Date(date);
+        if (unit==="day") {
+            d.setDate( d.getDate() + num );
+        } else if ( unit === "month" ) {
+            d.setMonth( d.getMonth() + num );
+        } else if ( unit === "year" ) {
+            d.setYear( d.getYear() + num );
+        } else if ( unit === "hour" ) {            
+            d.setHours( d.getHours() + num );
+        } else if ( unit === "minute" ) {            
+            d.setMinutes( d.getMinutes() + num );
+        } else if ( unit === "second" ) {
+            d.setSeconds( d.getSeconds() + num );
+        }
+        return d;
+    },
     toDate: function(str, format) {           
         var map = this.getParamMap(format);
         var elements = this.getDefaultElements();
@@ -1393,11 +1419,11 @@ t.start();
             return re.test(String(str).toLowerCase());
         },
         floatFormat:function(n,c,d,t){
-            if ( !this.isFloat(n) ) return "";
+            //if ( !this.isFloat(n) ) return "";
             c = isNaN(c = Math.abs(c)) ? 2 : c;
-            d = d === undefined ? "." : d;
-            t = t === undefined ? "," : t; 
-            var s = n < 0 ? "-" : "";
+            d = (d === undefined ? "." : d);
+            t = (t === undefined ? "," : t); 
+            var s = (n < 0 ? "-" : "");
             var i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c)));
             var j = (j = i.length) > 3 ? j % 3 : 0;
             return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
